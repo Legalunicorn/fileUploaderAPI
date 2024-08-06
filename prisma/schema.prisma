@@ -37,6 +37,8 @@ model File {
   sizeMB    Float
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  path      String
+  public_id String
   user      User     @relation(fields: [userId], references: [id])
   folder    Folder   @relation(fields: [folderId], references: [id])
   userId    Int

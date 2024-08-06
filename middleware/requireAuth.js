@@ -20,7 +20,7 @@ const requireAuth = asyncHandler(async(req,res,next)=>{
     const auth = req.headers.authorization;
     if (!auth){
         res.status(401).json({error:"Auth Token required"})
-        retur
+        return;
     }
     const token = auth.split(' ')[1];
     let id,jwtError=false;

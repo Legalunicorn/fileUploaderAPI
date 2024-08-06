@@ -12,6 +12,7 @@ const myError = require("./lib/myError") //globally available
 // var usersRouter = require('./routes/users');
 const authRouter = require("./routes/authRoutes")
 const folderRouter = require("./routes/folderRoutes")
+const fileRouter = require('./routes/fileRoutes')
 
 var app = express();
 
@@ -43,6 +44,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // app.use('/users', usersRouter);
 app.use("/api/auth",authRouter);
 app.use("/api/folder",folderRouter)
+app.use('/api/file',fileRouter)
 
 
 //catch 404 to send to error handler
