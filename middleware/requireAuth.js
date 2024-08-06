@@ -17,13 +17,12 @@ const prisma = new PrismaClient();
 
 
 const requireAuth = asyncHandler(async(req,res,next)=>{
-    const auth = req.headers.authroization;
+    const auth = req.headers.authorization;
     if (!auth){
         res.status(401).json({error:"Auth Token required"})
-        return
+        retur
     }
-    const token = auth.split("")[1];
-
+    const token = auth.split(' ')[1];
     let id,jwtError=false;
     jwt.verify(token,process.env.SECRET,(err,decoded)=>{
         if (err){
@@ -37,15 +36,14 @@ const requireAuth = asyncHandler(async(req,res,next)=>{
         res.status(401).json({error:"An error has occured with the token"});
         return;
     }
-
     //No issues
     req.user = await prisma.user.findUnique({
         where:{
             id:id
         }
     })
-
+    next();
+    console.log("user is: ",req.user)
 })
-
 
 module.exports = requireAuth;

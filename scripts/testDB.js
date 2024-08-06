@@ -9,13 +9,22 @@ async function main() {
     //         hashedpassword:"blahblah"
     //     }
     // })
-    const allUsers = await prisma.user.findMany();
-    // await prisma.user.deleteMany({
-    //     where:{
-    //         username:"bingus",
-    //     },
-    // })
-    console.log("this is all users: ",allUsers);
+    // const allUsers = await prisma.user.findMany();
+    // // await prisma.user.deleteMany({
+    // //     where:{
+    // //         username:"bingus",
+    // //     },
+    // // })
+
+    const allUsers = await prisma.user.count({
+      where:{
+        id:{
+          gt:1
+        }
+      }
+
+    })
+    console.log("count ",allUsers);
   }
   
   main()
