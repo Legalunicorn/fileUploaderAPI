@@ -5,6 +5,7 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 //my imports
 const cors = require("cors")
+const myError = require("./lib/myError") //globally available
 
 
 // var indexRouter = require('./routes/index');
@@ -50,6 +51,8 @@ app.use((req,res,next)=>{
 /**
  * ================ ERROR HANDLING =====================
  */
+
+
 
 app.use((err,req,res,next)=>{
     console.log(`$Error: ${err.message} ${err.status||'no stauts'}`);

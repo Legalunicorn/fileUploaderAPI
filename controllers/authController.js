@@ -1,5 +1,5 @@
 
-const {validationResult,body,param} = require("express-validator")
+const {validationResult,body} = require("express-validator")
 const asyncHandler = require("express-async-handler")
 const loginValidation = require("../util/loginValidation.js")
 const signupHandler = require("../util/signupHandler.js")
