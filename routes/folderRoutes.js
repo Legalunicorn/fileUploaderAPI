@@ -18,6 +18,12 @@ router.get("/:folderId",
     requireFolderAuth,
     controller.getFolder)
 
+
+router.get("/:folderId/files",
+    requireFolderAuth,
+    controller.getFolderFiles //TODO getFolderFiles
+)
+
 router.delete("/:folderId",
     requireFolderAuth,
     controller.deleteFolder)
@@ -26,5 +32,7 @@ router.patch("/:folderId",
     requireFolderAuth,
     controller.patchFolder
 )
+
+
 
 module.exports = router

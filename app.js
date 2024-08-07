@@ -43,8 +43,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 // app.use('/', indexRouter);
 // app.use('/users', usersRouter);
 app.use("/api/auth",authRouter);
-app.use("/api/folder",folderRouter)
-app.use('/api/file',fileRouter)
+app.use("/api/folders",folderRouter)
+app.use('/api/files',fileRouter)
 
 
 //catch 404 to send to error handler

@@ -44,5 +44,3 @@ model File {
   userId    Int
   folderId  Int
 }
-
-//npx prisma format to format schema

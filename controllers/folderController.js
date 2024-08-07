@@ -118,9 +118,26 @@ exports.patchFolder = [
             res.status(200).json({updatedFolder});
         }
 
-
-
-
-
     })
 ]
+
+exports.getFolderFiles = asyncHandler(async(req,res,next)=>{
+    //empty folder is not an error
+    const id = Number(req.params.folderId);
+    //404 if folder does not exist
+    const folder = await prisma.folder.findUnique({
+        where:{
+            id:id
+        }
+    })
+    if (!folder){
+        res.status(404).json({error:"Folder does not exist"});
+        return;
+    }
+    const files = await prisma.file.findMany({ //TODO combine both await into one promise.all()
+        where:{
+            folderId:id
+        }
+    })
+    res.status(200).json({files});
+})

@@ -5,19 +5,21 @@
 
 
 ### file
-`GET`         /file/:fileID  (get file metadata )
+`GET`         /file/:fileID  (get file metadata ) ✅
 
-`GET`         /file/:fileID/content  (download the file)
+`GET`         /file/:fileID/content  (download the file) ✅
 
-`POST`        /file 
+`POST`        /file ✅
 
-`DELETE`    /file/:fileID
+`DELETE`    /file/:fileID //delete from record, and also from cloudinary 
 
-`PATCH`      /file/:fileID
+`PATCH`      /file/:fileID ✅
 
 
 ### folder
 `GET`   /folder/:folderID ✅
+
+`GET`   /folder/:folderID/files ✅
 
 `POST` /folder ✅
 
