@@ -5,11 +5,27 @@ const cloudinary = require("../config/cloudinary")
 const {PrismaClient} = require('@prisma/client')
 const prisma = new PrismaClient();
 const myError = require("../lib/myError")
+const {Readable} = require("stream")
 
 /**
  * upload.single() is a multer middleware function 
  * takes in the name of the file
  */
+
+ async function uploadStream(buffer) {
+    return new Promise((res, rej) => {
+      const theTransformStream = cloudinary.uploader.upload_stream(
+        {folder:'top_file_uploader'},
+        (err, result) => {
+          if (err) return rej(err);
+          res(result);
+        }
+      );
+      let str = Readable.from(buffer);
+      str.pipe(theTransformStream);
+    });
+  }
+
 exports.postFile=[
     upload.single("image"),
     async(req,res,next)=>{
@@ -19,11 +35,10 @@ exports.postFile=[
             console.log("req.file.path",req.file.path);
             console.log("/",req.file);
 
-            //trying to figure out while file.path is undefined
-            const result = await cloudinary.uploader.upload(req.file.path,{
-                folder:'top_file_uploader'
-            });
-            // console.log("sucess?",result);
+            const result = await uploadStream(req.file.buffer);
+            console.log("sucess?",result);
+            const downloadUrl = cloudinary.url(result.public_id,{flags:"attachment:FileUploader"+req.file.filename})
+
             const file = await prisma.file.create({
                 data:{
                     name:req.file.originalname,
@@ -33,6 +48,8 @@ exports.postFile=[
                     public_id: result.public_id,
                     userId: req.user.id,
                     folderId: folderId,
+                    downloadLink: downloadUrl,
+                    
                 }
             })
 
@@ -103,6 +120,9 @@ exports.patchFile = [
     })
 ]
 
+
+//BUG this whole thing is redundant
+// we just need to store the flag 
 exports.getFileContent= asyncHandler(async(req,res,next)=>{
     const id = Number(req.params.fileId);
     //check if file exist

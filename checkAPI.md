@@ -11,7 +11,7 @@
 
 `POST`        /file ✅
 
-`DELETE`    /file/:fileID //delete from record, and also from cloudinary 
+`DELETE`    /file/:fileID //delete from record, and also from cloudinary ✅
 
 `PATCH`      /file/:fileID ✅
 

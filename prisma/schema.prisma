@@ -31,16 +31,17 @@ model Folder {
 }
 
 model File {
-  id        Int      @id @default(autoincrement())
-  name      String
-  extension String
-  sizeMB    Float
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  path      String
-  public_id String
-  user      User     @relation(fields: [userId], references: [id])
-  folder    Folder   @relation(fields: [folderId], references: [id])
-  userId    Int
-  folderId  Int
+  id           Int      @id @default(autoincrement())
+  name         String
+  extension    String
+  sizeMB       Float
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  path         String
+  public_id    String
+  user         User     @relation(fields: [userId], references: [id])
+  folder       Folder   @relation(fields: [folderId], references: [id])
+  userId       Int
+  folderId     Int
+  downloadLink String?
 }
