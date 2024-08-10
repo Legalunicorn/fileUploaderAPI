@@ -14,6 +14,13 @@ router.post("/",
     requireAuth,
     controller.postFolder) //DONE
 
+
+//need a route to get all folders
+router.get("/",
+    requireAuth,
+    controller.getAllFolders
+)
+
 router.get("/:folderId",
     requireFolderAuth,
     controller.getFolder)

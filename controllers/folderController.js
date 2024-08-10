@@ -34,6 +34,17 @@ exports.postFolder=[ //can
 ]
 
 
+exports.getAllFolders = asyncHandler(async(req,res,next)=>{
+    const folders = await prisma.folder.findMany({
+        where:{
+            userId:req.user.id
+        }
+    })
+
+    res.status(200).json({folders});
+})
+
+//why would u want this function Lol
 exports.getFolder= asyncHandler(async(req,res,next)=>{
     const id = Number(req.params.folderId);
     console.log("getting: ",id)
