@@ -58,6 +58,15 @@ exports.postFile=[
 
             const result = await uploadStream(req.file.buffer,type);
             console.log("sucess?",result);
+
+            let download;
+            if (type=="raw"){
+                download = result.secure_url;
+            } else{
+                download = cloudinary.url(result.public_id,{
+                    flags:`attachment:FileUploader${result.asset_id.substring(0,5)}`
+                })
+            }
             // const downloadUrl = cloudinary.url(result.public_id,{
             //     flags:"attachment:FileUploader"+req.file.originalname
             // })
@@ -73,7 +82,7 @@ exports.postFile=[
                     public_id: result.public_id,
                     userId: req.user.id,
                     folderId: folderId,
-                    downloadLink: result.secure_url //maybe remove this and set an endpoint to delete file
+                    downloadLink: download //maybe remove this and set an endpoint to delete file
                     
                 }
             })
