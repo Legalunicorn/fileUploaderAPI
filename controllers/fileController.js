@@ -12,10 +12,14 @@ const {Readable} = require("stream")
  * takes in the name of the file
  */
 
- async function uploadStream(buffer) {
+ async function uploadStream(buffer,type) {
     return new Promise((res, rej) => {
       const theTransformStream = cloudinary.uploader.upload_stream(
-        {folder:'top_file_uploader'},
+        {
+            folder:'top_file_uploader',
+            resource_type:type
+
+        },
         (err, result) => {
           if (err) return rej(err);
           res(result);
@@ -26,6 +30,21 @@ const {Readable} = require("stream")
     });
   }
 
+
+
+function getResourceType(mimetype){
+    if (mimetype.startsWith("image/")) return 'image'
+    else if (mimetype.startsWith("video/")) return 'video'
+    else return 'raw'
+}
+
+function getFileExt(filename){
+    const lastIndex = filename.lastIndexOf(".");
+    if (lastIndex==-1) return 'unknown'
+    else return filename.substring(lastIndex+1,).toLowerCase();
+}
+
+
 exports.postFile=[
     upload.single("image"),
     async(req,res,next)=>{
@@ -35,23 +54,30 @@ exports.postFile=[
             console.log("req.file.path",req.file.path);
             console.log("/",req.file);
 
-            const result = await uploadStream(req.file.buffer);
+            const type = getResourceType(req.file.mimetype);
+
+            const result = await uploadStream(req.file.buffer,type);
             console.log("sucess?",result);
-            const downloadUrl = cloudinary.url(result.public_id,{flags:"attachment:FileUploader"+req.file.filename})
+            // const downloadUrl = cloudinary.url(result.public_id,{
+            //     flags:"attachment:FileUploader"+req.file.originalname
+            // })
+            const fileExt = getFileExt(req.file.originalname);
+
 
             const file = await prisma.file.create({
                 data:{
                     name:req.file.originalname,
-                    extension:result.format,
+                    extension: fileExt,
                     sizeMB: req.file.size,
                     path: result.secure_url,
                     public_id: result.public_id,
                     userId: req.user.id,
                     folderId: folderId,
-                    downloadLink: downloadUrl,
+                    downloadLink: result.secure_url //maybe remove this and set an endpoint to delete file
                     
                 }
             })
+            console.log("prisma: ",file)
 
             res.status(200).json({file});
         } catch(err){
@@ -121,8 +147,6 @@ exports.patchFile = [
 ]
 
 
-//BUG this whole thing is redundant
-// we just need to store the flag 
 exports.getFileContent= asyncHandler(async(req,res,next)=>{
     const id = Number(req.params.fileId);
     //check if file exist
@@ -134,8 +158,12 @@ exports.getFileContent= asyncHandler(async(req,res,next)=>{
     if (!file){
         res.status(404).json({error:"File does not exist."})
         return;
+
+
     } else{
-        res.download(file.path,file.name); //should be succesful?
+        console.log("HEADERS: ",file.name, 'example.pdf')
+        res.setHeader('Content-Disposition',`attachment;filename=${"example.pdf"}`)
+        res.redirect(file.downloadLink); //should be succesful?
     }
 })
 

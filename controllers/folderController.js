@@ -7,6 +7,8 @@ const prisma = new PrismaClient;
 //pushing a file to a folder is a file operation
 //deleting a file from a folder is also a file endpoint
 
+
+
 exports.postFolder=[ //can
     body("name","Name is invalid")
         .trim()
@@ -35,12 +37,12 @@ exports.postFolder=[ //can
 
 
 exports.getAllFolders = asyncHandler(async(req,res,next)=>{
+    console.log("hi?")
     const folders = await prisma.folder.findMany({
         where:{
             userId:req.user.id
         }
     })
-
     res.status(200).json({folders});
 })
 
@@ -150,5 +152,5 @@ exports.getFolderFiles = asyncHandler(async(req,res,next)=>{
             folderId:id
         }
     })
-    res.status(200).json({files});
+    res.status(200).json({files,folder});
 })
